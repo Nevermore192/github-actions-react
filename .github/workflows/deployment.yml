@@ -21,16 +21,15 @@ jobs:
         run: npm run lint
    build:
       runs-on: ubuntu-latest
-        steps: 
-        - name: get repository code
-          uses: actions/checkout@v3
-        - name: install dependecies
-          run: npm ci # can install into ci
-        - name: build aplication
-          run: npm run build
-        - name: deploy
-          run: echo deploying...
-
+      steps: 
+      - name: get repository code
+        uses: actions/checkout@v3
+      - name: install dependecies
+        run: npm ci # can install into ci
+      - name: build aplication
+        run: npm run build
+      - name: deploy
+        run: echo deploying...
 
 
 
