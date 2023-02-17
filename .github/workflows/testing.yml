@@ -1,7 +1,7 @@
 name: Test react App
 on: push
 jobs:
-   Test:
+   test:
     runs-on: ubuntu-latest
     steps: 
     - name: get repository code
@@ -9,7 +9,7 @@ jobs:
     - name: install dependecies
       run: npm ci # can install into ci
     - name: Test aplication
-      run: npm run Test
+      run: npm run test
 
 
 
