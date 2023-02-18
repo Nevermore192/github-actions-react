@@ -3,12 +3,19 @@ on:
   push:
     branches:
       - main
+    #paths-ignore:
+    # - '.github/workflows/*' на игнор
 jobs:
    test:
     runs-on: ubuntu-latest
     steps: 
     - name: get repository code
       uses: actions/checkout@v3
+    - name: install cache
+      uses: actions/cache@v3
+      with: 
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }} # либо поставить просто статический node-modules-devops 
     - name: install dependecies
       run: npm ci # can install into ci
     - name: Test aplication
@@ -19,6 +26,12 @@ jobs:
       steps: 
       - name: get repository code
         uses: actions/checkout@v3
+      - name: install cache
+        uses: actions/cache@v3
+        with: 
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }} # либо поставить просто статический node-modules-devops 
+
       - name: install dependecies
         run: npm ci # can install into ci
       - name: lint aplication
@@ -29,6 +42,11 @@ jobs:
       steps: 
       - name: get repository code
         uses: actions/checkout@v3
+      - name: install cache
+        uses: actions/cache@v3
+        with: 
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }} # либо поставить просто статический node-modules-devops 
       - name: install dependecies
         run: npm ci # can install into ci
       - name: build aplication
