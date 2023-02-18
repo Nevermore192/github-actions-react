@@ -1,20 +1,68 @@
 name: deploy react App
-on: push
+on:
+  push:
+    branches:
+      - main
+    #paths-ignore:
+    # - '.github/workflows/*' на игнор
 jobs:
-   deploy:
+   test:
     runs-on: ubuntu-latest
     steps: 
     - name: get repository code
       uses: actions/checkout@v3
+    - name: install cache
+      uses: actions/cache@v3
+      with: 
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }} # либо поставить просто статический node-modules-devops 
     - name: install dependecies
       run: npm ci # can install into ci
     - name: Test aplication
       run: npm run test
-    - name: lint aplication
-      run: npm run lint
-    - name: build aplication
-      run: npm run build
-    - name: deploy
-      run: echo deploying...
+   lint:
+      runs-on: ubuntu-latest
+      steps: 
+      - name: get repository code
+        uses: actions/checkout@v3
+      - name: install cache
+        uses: actions/cache@v3
+        with: 
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }} # либо поставить просто статический node-modules-devops 
+
+      - name: install dependecies
+        run: npm ci # can install into ci
+      - name: lint aplication
+        run: npm run lint
+   build:
+      needs: [lint, test]
+      #continue-on-error: true  это если будет работать, не смотря на ошибки 
+      strategy:
+        matrix:
+         node-version: [14, 16] # key
+         os: [ubuntu-latest, windows-latest] # просто перемение
+      runs-on: ${{ matrix.os }}
+      steps: 
+      - name: get repository code
+        uses: actions/checkout@v3
+      - name: install node JS
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: install cache
+        uses: actions/cache@v3
+        with: 
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }} # либо поставить просто статический node-modules-devops 
+      - name: install dependecies
+        run: npm ci # can install into ci
+      - name: build aplication
+        run: npm run build
+      - name: deploy
+        run: echo deploying...
 
 
+
+
+  
